@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ku">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>کوردستان و مێژوو</title>
+    <style>
+        :root {
+    --kurdish-red: #ED1C24;
+    --kurdish-green: #3AAA35;
+    --kurdish-yellow: #FFCB05;
+    --kurdish-white: #FFFFFF;
+    --primary-color: #3AAA35;
+    --primary-dark: #2a7d28;
+    --chat-bg: #f7f7f7;
+    --user-msg-bg: var(--kurdish-green);
+    --ai-msg-bg: rgba(255, 255, 255, 0.9);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    direction: rtl;
+}
+
+body {
+    background-color: var(--chat-bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.circuit-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(var(--kurdish-yellow) 1px, transparent 1px),
+        linear-gradient(to right, rgba(237, 28, 36, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(58, 170, 53, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px, 20px 20px, 20px 20px;
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.sun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250px;
+    height: 250px;
+    background: var(--kurdish-yellow);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 60px var(--kurdish-yellow);
+    animation: pulseSun 10s infinite alternate;
+    z-index: -2;
+    opacity: 0.5;
+}
+
+.mountain {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 35%;
+    background: var(--kurdish-green);
+    clip-path: polygon(0% 100%, 20% 70%, 40% 100%, 60% 50%, 80% 80%, 100% 30%, 100% 100%);
+    animation: moveMountains 20s infinite alternate ease-in-out;
+    z-index: -2;
+    opacity: 0.3;
+}
+
+.stripe-red {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 25%;
+    background: var(--kurdish-red);
+    animation: moveStripeRed 15s infinite alternate ease-in-out;
+    z-index: -3;
+    opacity: 0.2;
+}
+
+.stripe-white {
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    height: 25%;
+    background: var(--kurdish-white);
+    animation: moveStripeWhite 18s infinite alternate ease-in-out;
+    z-index: -3;
+    opacity: 0.2;
+}
+
+.particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    background: var(--kurdish-yellow);
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: floatParticle 8s infinite linear;
+}
+
+.data-stream {
+    position: absolute;
+    height: 2px;
+    background: var(--kurdish-green);
+    opacity: 0.7;
+    animation: dataStream 4s infinite linear;
+    z-index: -1;
+}
+
+@keyframes dataStream {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        width: 100px;
+        opacity: 0;
+    }
+}
+
+@keyframes pulseSun {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes moveMountains {
+    0% { clip-path: polygon(0% 100%, 20% 70%, 40% 100%, 60% 50%, 80% 80%, 100% 30%, 100% 100%); }
+    50% { clip-path: polygon(0% 100%, 15% 60%, 35% 90%, 55% 45%, 75% 70%, 100% 20%, 100% 100%); }
+    100% { clip-path: polygon(0% 100%, 20% 70%, 40% 100%, 60% 50%, 80% 80%, 100% 30%, 100% 100%); }
+}
+
+@keyframes moveStripeRed {
+    0% { transform: skewY(0deg); }
+    100% { transform: skewY(1deg); }
+}
+
+@keyframes moveStripeWhite {
+    0% { transform: skewY(0deg); }
+    100% { transform: skewY(-1deg); }
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.6;
+    }
+    80% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes rotateSun {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Header Styles */
+.header {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between; /* هاوشێوەی کۆتایی و سەرەتای ئێستا */
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(to right, var(--kurdish-red), var(--kurdish-white), var(--kurdish-green), var(--kurdish-yellow));
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-star {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.logo-star::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    background: var(--kurdish-yellow);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.logo-star::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: conic-gradient(
+        var(--kurdish-yellow) 0deg, var(--kurdish-yellow) 8deg, 
+        transparent 8deg, transparent 17.14deg,
+        var(--kurdish-yellow) 17.14deg, var(--kurdish-yellow) 25.14deg,
+        transparent 25.14deg, transparent 34.28deg,
+        var(--kurdish-yellow) 34.28deg, var(--kurdish-yellow) 42.28deg,
+        transparent 42.28deg, transparent 51.42deg,
+        var(--kurdish-yellow) 51.42deg, var(--kurdish-yellow) 59.42deg,
+        transparent 59.42deg, transparent 68.56deg,
+        var(--kurdish-yellow) 68.56deg, var(--kurdish-yellow) 76.56deg,
+        transparent 76.56deg, transparent 85.7deg,
+        var(--kurdish-yellow) 85.7deg, var(--kurdish-yellow) 93.7deg,
+        transparent 93.7deg, transparent 102.84deg,
+        var(--kurdish-yellow) 102.84deg, var(--kurdish-yellow) 110.84deg,
+        transparent 110.84deg, transparent 119.98deg,
+        var(--kurdish-yellow) 119.98deg, var(--kurdish-yellow) 127.98deg,
+        transparent 127.98deg, transparent 137.12deg,
+        var(--kurdish-yellow) 137.12deg, var(--kurdish-yellow) 145.12deg,
+        transparent 145.12deg, transparent 154.26deg,
+        var(--kurdish-yellow) 154.26deg, var(--kurdish-yellow) 162.26deg,
+        transparent 162.26deg, transparent 171.4deg,
+        var(--kurdish-yellow) 171.4deg, var(--kurdish-yellow) 179.4deg,
+        transparent 179.4deg, transparent 188.54deg,
+        var(--kurdish-yellow) 188.54deg, var(--kurdish-yellow) 196.54deg,
+        transparent 196.54deg, transparent 205.68deg,
+        var(--kurdish-yellow) 205.68deg, var(--kurdish-yellow) 213.68deg,
+        transparent 213.68deg, transparent 222.82deg,
+        var(--kurdish-yellow) 222.82deg, var(--kurdish-yellow) 230.82deg,
+        transparent 230.82deg, transparent 239.96deg,
+        var(--kurdish-yellow) 239.96deg, var(--kurdish-yellow) 247.96deg,
+        transparent 247.96deg, transparent 257.1deg,
+        var(--kurdish-yellow) 257.1deg, var(--kurdish-yellow) 265.1deg,
+        transparent 265.1deg, transparent 274.24deg,
+        var(--kurdish-yellow) 274.24deg, var(--kurdish-yellow) 282.24deg,
+        transparent 282.24deg, transparent 291.38deg,
+        var(--kurdish-yellow) 291.38deg, var(--kurdish-yellow) 299.38deg,
+        transparent 299.38deg, transparent 308.52deg,
+        var(--kurdish-yellow) 308.52deg, var(--kurdish-yellow) 316.52deg,
+        transparent 316.52deg, transparent 325.66deg,
+        var(--kurdish-yellow) 325.66deg, var(--kurdish-yellow) 333.66deg,
+        transparent 333.66deg, transparent 342.8deg,
+        var(--kurdish-yellow) 342.8deg, var(--kurdish-yellow) 350.8deg,
+        transparent 350.8deg, transparent 360deg
+    );
+    animation: rotateSun 20s infinite linear;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: bold;
+    background: linear-gradient(45deg, var(--kurdish-red), var(--kurdish-green), var(--kurdish-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 3px rgba(0,0,0,0.1);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--kurdish-green), var(--kurdish-yellow));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Container */
+.main-container {
+    display: flex;
+    height: calc(100vh - 70px);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    z-index: 10;
+}
+
+.history-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 15px;
+}
+
+.history-item {
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.history-item:hover {
+    background: rgba(58, 170, 53, 0.1);
+}
+
+.history-item.active {
+    background: rgba(58, 170, 53, 0.2);
+    font-weight: bold;
+}
+
+.history-icon {
+    color: var(--primary-color);
+    font-size: 16px;
+}
+
+.sidebar-footer {
+    padding: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+.sidebar-btn {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: all 0.2s;
+}
+
+.sidebar-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Content Area */
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.content-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 15px 20px;
+    background: linear-gradient(45deg, rgba(58, 170, 53, 0.7), rgba(255, 203, 5, 0.7));
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-body {
+    padding: 20px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.card-body p {
+    margin-bottom: 15px;
+}
+
+.card-body img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin: 15px 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-footer {
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.timeline {
+    position: relative;
+    margin: 20px 0;
+    padding-right: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--kurdish-red), var(--kurdish-green), var(--kurdish-yellow));
+    border-radius: 3px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 25px;
+    padding-right: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 15px;
+    width: 20px;
+    height: 20px;
+    background: var(--kurdish-yellow);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(255, 203, 5, 0.3);
+}
+
+.timeline-date {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.timeline-content {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.map-area {
+    height: 400px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.map-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+}
+
+.map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.reference-list {
+    list-style-type: none;
+    padding-right: 20px;
+}
+
+.reference-list li {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.reference-list li::before {
+    content: '📚';
+    position: absolute;
+    right: -25px;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -280px; /* لە لای چەپ دەرەوە */
+        top: 70px;
+        bottom: 0;
+        z-index: 200;
+        transition: left 0.3s ease;
+    }
+    
+    .sidebar.show {
+        left: 0;
+    }
+
+
+    
+    .mobile-menu-btn {
+        display: block;
+        margin-left: 10px;
+    }
+    
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 100;
+    }
+    
+    .sidebar-overlay.show {
+        display: block;
+    }
+    
+    .particle {
+        opacity: 0.4;
+    }
+    
+    .data-stream:nth-child(odd) {
+        display: none;
+    }
+
+}
+@media (max-width: 480px) {
+    .header {
+        padding: 10px;
+    }
+    
+    .logo-text {
+        font-size: 16px;
+    }
+    
+    .logo-star {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    
+    .content-area {
+        padding: 10px;
+    }
+    
+    .card-header {
+        font-size: 16px;
+        padding: 12px 15px;
+    }
+    
+    .card-body {
+        padding: 15px;
+        font-size: 14px;
+    }
+    
+    .timeline {
+        padding-right: 20px;
+    }
+    
+    .map-area {
+        height: 300px;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="stripe-red"></div>
+        <div class="stripe-white"></div>
+        <div class="circuit-pattern"></div>
+        <div class="sun"></div>
+        <div class="mountain"></div>
+        <div class="particles" id="particles"></div>
+        <div id="data-streams"></div>
+    </div>
+
+    <header class="header">
+                <!-- بەشی چەپ: منیو -->
+                <div class="user-avatar">AH</div>
+
+    
+        <div class="left-section" style="display: flex; align-items: center;">
+            <div class="logo-container">
+                <div class="logo-star"></div>
+                <div class="logo-text">کوردستان و مێژوو</div>
+            </div>
+        </div>
+    
+        <!-- بەشی ڕاست: یوزەر -->
+        <button class="mobile-menu-btn">☰</button>
+    </header>
+    
+
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="history-list">
+                <div class="history-item active">
+                    <span class="history-icon">🔍</span>
+                    <span>
+                        پسیار کردن لە AI</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-icon">📚</span>
+                    <span>
+                        کوردستان و مێژوو</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-icon">💻</span>
+                    <span>پرۆگرامینگ بە کوردی</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-icon">🗺️</span>
+                    <span>جوگرافیای کوردستان</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-icon">📝</span>
+                    <span>کەلتوور و ئەدەب</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-icon">🏆</span>
+                    <span>کەسایەتیە ناودارەکان</span>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="sidebar-btn">ℹ️ دەربارە</button>
+            </div>
+        </div>
+        
+        <div class="content-area">
+            <!-- پێشەکی -->
+            <div class="content-card">
+                <div class="card-header">
+                    <span>🏛️</span> مێژووی کوردستان - پێشەکی
+                </div>
+                <div class="card-body">
+                    <p>کوردستان ناوچەیەکی جوگرافیاییە کە دابەش بووە بەسەر چەند وڵاتێکی ڕۆژهەڵاتی ناوەڕاست. میللەتی کورد یەکێکە لە کۆنترین میللەتەکانی ناوچەکە و مێژووی دەگەڕێتەوە بۆ هەزاران ساڵ پێش.</p>
+                    
+                    <p>لەم پەڕەیەدا، هەوڵ دەدەین کە کورتەیەک لە مێژووی کوردستان بخەینە ڕوو، لە سەردەمە کۆنەکانەوە تا ئەمڕۆ. مێژووی کوردستان دەوڵەمەندە بە رووداو، خەبات و کەلتوور کە پێکهاتەیەکی گرنگی ناسنامەی کوردیان پێک هێناوە.</p>
+                    
+                    <div class="map-area">
+                        <img src="/api/placeholder/800/400" alt="نەخشەی کوردستان" class="map-placeholder">
+                        <div class="map-overlay">نەخشەی کوردستانی مێژوویی</div>
+                    </div>
+                    
+                    <p>کورد وەک میللەتێک بە درێژایی مێژوو لە ژێر فەرمانڕەوایی ئیمپراتۆریەتە جیاوازەکان بوون: میدیاکان، هەخامەنشینەکان، سەلجوقیەکان، عوسمانیەکان، سەفەویەکان، و لە کۆتاییدا دابەشبوونی ناوچەکە بەسەر چەند دەوڵەتی مۆدێرندا.</p>
+                </div>
+            </div>
+            
+            <!-- هێڵی کات -->
+            <div class="content-card">
+                <div class="card-header">
+                    <span>⏳</span> هێڵی کات - سەردەمە گرنگەکانی مێژووی کوردستان
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-date">~700 پ.ز</div>
+                            <div class="timeline-content">
+                                <h3>ئیمپراتۆریەتی میدی</h3>
+                                <p>یەکێک لە کۆنترین ئیمپراتۆریەتەکانی ناوچەکە بوو کە پێش زایین دامەزرا. زۆر لە مێژووناسان پێیان وایە کە میدیەکان باپیرانی کورد بوون. میدیەکان توانیان ئیمپراتۆریەتی ئاشوریەکان بڕووخێنن و دەسەڵاتیان بەسەر ناوچەی ڕۆژهەڵاتی ناوەڕاستدا بسەپێنن.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-date">650-330 پ.ز</div>
+                            <div class="timeline-content">
+                                <h3>سەردەمی هەخامەنشی</h3>
+                                <p>ئیمپراتۆریەتی هەخامەنشی فارسی دەسەڵاتی بەسەر ناوچەی میدیاکاندا سەپاند، بەڵام میدیا وەک ساتراپێک لە نێو ئیمپراتۆریەتی هەخامەنشیدا مایەوە.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-date">سەدەی 7 ز</div>
+                            <div class="timeline-content">
+                                <h3>فتوحاتی ئیسلامی</h3>
+                                <p>لەگەڵ بڵاوبونەوەی ئیسلام لە ناوچەکەدا، کوردستانیش کەوتە ژێر کاریگەری ئیسلام. زۆربەی کوردەکان بوون بە موسڵمان، بەڵام کەلتوور و زمانی کوردی پارێزرا.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-date">سەدەکانی 12-15 ز</div>
+                            <div class="timeline-content">
+                                <h3>سەردەمی میرنشینە کوردیەکان</h3>
+                                <p>لەم سەردەمەدا، چەندین میرنشینی کوردی سەربەخۆ و نیمچە سەربەخۆ سەریان هەڵدا، وەک میرنشینی هەکاری، بەدلیس، سۆران، بابان و بۆتان. ئەم میرنشینانە دەسەڵاتی خۆیان هەبوو و کاروباری ناوخۆیان بەڕێوە دەبرد.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- میرنشینە کوردیەکان -->
+            <div class="content-card">
+                <div class="card-header">
+                    <span>🏛️</span> میرنشینە کوردیەکان
+                </div>
+                <div class="card-body">
+                    <p>لە سەردەمە میانیەکاندا، چەندین میرنشینی کوردی بە سەربەخۆیی هەبوون کە لە ناوچەکەدا حکومەتیان دروستکردن. ئەمانە بەشێک لە بنچینەی مێژووی سیاسی و کلتوری کوردستانن.</p>
+                </div>
+            </div>
+            
+            <!-- جوگرافیای کوردستان -->
+            <div class="content-card">
+                <div class="card-header">
+                    <span>🗺️</span> جوگرافیای کوردستان
+                </div>
+                <div class="card-body">
+                    <p>کوردستان بە ژێرچووە و دەڕێژێکی جغرافیایی تایبەتی خۆی هەیە؛ کوهەکان، دەرەنگەکان و دەریا هەمووی بەرزکردنەوەی ڕەخنەیەکی جغرافیایی دەنیشان دەدات. ئەم ناوچەیە بەرەنگارێکی زۆر هەیە بۆ تەندروستی ژینگە و کەلتوری هەموو جۆرەکان.</p>
+                </div>
+            </div>
+            
+            <!-- کەلتوور و ئەدەب -->
+            <div class="content-card">
+                <div class="card-header">
+                    <span>📝</span> کەلتوور و ئەدەب
+                </div>
+                <div class="card-body">
+                    <p>کەلتوور و ئەدەبی کوردی دەرچاوەی ریشه‌دارەکانە لە ڕەوشتی باستانی کوردستان. ئەو ئەدەب و هونەرانە کە لە گۆرانی، چیرۆک و نووسیندا بڵاو دەکرێنەوە، دڵنیاییەکی زۆر بۆ ناساندنی نەتەوەکە دابین دەکەن.</p>
+                </div>
+            </div>
+            
+            <!-- کەسایەتیە ناودارەکان -->
+            <div class="content-card">
+                <div class="card-header">
+                    <span>🏆</span> کەسایەتیە ناودارەکان
+                </div>
+                <div class="card-body">
+                    <p>لە مێژوو و کەلتورەکانی کوردستاندا، چەندین کەسایەتی ناودار هەبوون کە بەرزبوونەوەی نەتەوەکەیان پیشان دا. ئەم کەسایەتییانە لە هەموو پەیوەندیدا، لە سەیاست، هونەر و زانستدا دۆزراونەوە.</p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const sidebar = document.querySelector('.sidebar');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+        });
+    });
+    </script>
+    
+    
